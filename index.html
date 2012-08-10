@@ -53,6 +53,20 @@
             return all[code];
           };
 
+          this.eachButton = function(whatToDo) {
+            var all = [
+              _btns.green,
+              _btns.yellow,
+              _btns.blue,
+              _btns.red
+            ];
+
+            for(var i = 0; i<all.length; i++) {
+              var btn = all[i];
+              whatToDo(i, btn);
+            }
+          };
+
           this.btns = function() {
             return _btns;
           };
@@ -74,30 +88,72 @@
           }
         }
 
+        function Controls(board) {
+          var _board = board;
+
+          this.enable = function() {
+            _board.eachButton(function(code, btn){
+              btn.element().onclick = function() {
+                var hitted = stage.hit(Genius.Color.ofCode(code));
+                if (hitted) {
+                  highlightButton(btn, function() {
+                    if(stage.passed()) {
+                      stage = game.nextStage();
+                      levelP.textContent = "Level: " + stage.level();
+                      disable();
+                      highlightNext();
+                    }
+                  });
+                } else {
+                  document.write("<h1>YOU LOSE</h1>");
+                }
+              }
+            });
+          };
+
+          function disable() {
+            _board.eachButton(function(code, btn){
+              btn.element().onclick = function(){};
+            });
+          };
+
+        }
+
         var game = new Genius.Game();
+        var levelP = document.createElement("p");
+        document.body.appendChild(levelP);
         var board = new Board();
         var stage = game.nextStage();
-        stage = game.nextStage();
-        stage = game.nextStage();
-        stage = game.nextStage();
-        stage = game.nextStage();
-        stage = game.nextStage();
-        stage = game.nextStage();
+        var controls = new Controls(board);
+        levelP.textContent = "Level: " + stage.level();
 
-        (function mainLoop() {
-          (function highlightNext() {
-            var color = stage.nextColor();
-            var btn = board.btnOfCode(color.code());
-            btn.highlight();
+        function highlightNext() {
+          var color = stage.nextColor();
+          var btn = board.btnOfCode(color.code());
+          btn.highlight();
 
+          setTimeout(function() {
+            btn.undoHighlight();
+
+            if(stage.allShown()) {
+              controls.enable();
+            } else {
+              setTimeout(highlightNext, 500);
+            }
+          }, 1000);
+        };
+        highlightNext();
+
+        function highlightButton(btn, after) {
+          btn.highlight();
+          setTimeout(function() {
+            btn.undoHighlight();
             setTimeout(function() {
-              btn.undoHighlight();
-              if(!stage.allShown()) {
-                setTimeout(highlightNext, 500);
-              }
-            }, 1000);
-          }());
-        }());
+              after();
+            }, 250);
+          }, 500);
+        }
+
       }(HugoLnx.Genius));
     </script>
   </body>
