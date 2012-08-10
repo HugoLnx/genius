@@ -22,7 +22,7 @@
       Color.FOURTH
     ];
 
-    return all[code-1];
+    return all[code];
   };
 
   Color.random = function() {
