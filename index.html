@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+  </head>
+  <body>
+    <script type="text/javascript" src="src/namespaces.js"></script>
+    <script type="text/javascript" src="src/genius/Color.js"></script>
+    <script type="text/javascript" src="src/genius/Stage.js"></script>
+    <script type="text/javascript" src="src/genius/Game.js"></script>
+    <script>
+      (function(Genius) {
+        function Button(color, board) {
+          var _color = color;
+          var _element = newDiv(color, board);
+
+          this.highlight = function() {
+            _element.style.opacity = "1";
+          };
+
+          this.undoHighlight = function() {
+            _element.style.opacity = "0.5";
+          };
+
+          function newDiv(color, board) {
+            var div = document.createElement("div")
+            div.style.opacity = "0.5";
+            div.style.width = "100px";
+            div.style.height = "100px";
+            div.style.display = "inline-block";
+            div.style.backgroundColor = color;
+            board.appendChild(div);
+            return div;
+          }
+
+          this.element = function() {
+            return _element;
+          };
+        }
+
+        function Board() {
+          var _btns = {};
+          var _element = createDiv();
+
+          this.btnOfCode = function(code) {
+            var all = [
+              _btns.green,
+              _btns.yellow,
+              _btns.blue,
+              _btns.red
+            ];
+
+            return all[code];
+          };
+
+          this.btns = function() {
+            return _btns;
+          };
+
+          function createDiv() {
+            var div = document.createElement("div");
+            div.style.width = "200px";
+            div.style.height = "200px";
+            document.body.appendChild(div);
+
+            _btns = {
+              green: new Button("green", div),
+              yellow: new Button("yellow", div),
+              blue: new Button("blue", div),
+              red: new Button("red", div)
+            }
+
+            return div;
+          }
+        }
+
+        var game = new Genius.Game();
+        var board = new Board();
+        var stage = game.nextStage();
+        stage = game.nextStage();
+        stage = game.nextStage();
+        stage = game.nextStage();
+        stage = game.nextStage();
+        stage = game.nextStage();
+        stage = game.nextStage();
+
+        (function mainLoop() {
+          (function highlightNext() {
+            var color = stage.nextColor();
+            var btn = board.btnOfCode(color.code());
+            btn.highlight();
+
+            setTimeout(function() {
+              btn.undoHighlight();
+              if(!stage.allShown()) {
+                setTimeout(highlightNext, 500);
+              }
+            }, 1000);
+          }());
+        }());
+      }(HugoLnx.Genius));
+    </script>
+  </body>
+</html>
+
