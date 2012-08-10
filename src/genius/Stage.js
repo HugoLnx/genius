@@ -38,5 +38,9 @@
     this.level = function() {
       return _level;
     };
+
+    this.allShown = function() {
+      return _allShown;
+    };
   }
 }(HugoLnx.Genius));
