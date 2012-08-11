@@ -1,10 +1,11 @@
 (function(Genius) {
   var Color = Genius.Color;
+  var HappyArray = Genius.HappyArray;
 
   Genius.Stage = function (level) {
     var _level = level;
     var _failed = false;
-    var _colors = [];
+    var _colors = new HappyArray();
     var _allShown = false;
 
     this.nextColor = function() {
@@ -19,7 +20,7 @@
     };
 
     this.hit = function(color) {
-      var hitted = color === _colors.pop();
+      var hitted = color === _colors.popBack();
       if(!hitted) {
         _failed = true;
       }
