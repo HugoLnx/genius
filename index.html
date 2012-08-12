@@ -74,7 +74,6 @@
 
             anchor.textContent = "Try Again";
             anchor.href = "#";
-            anchor.style.display = "block";
             anchor.onclick = function() {
               _this.destroy();
               _scene = new GeniusScene();
@@ -136,6 +135,7 @@
 
         function Board() {
           var _btns = {};
+          var _warning;
           var _element = createDiv();
 
           this.btnOfCode = function(code) {
@@ -171,11 +171,33 @@
             return _btns;
           };
 
+          this.warn = function(message, after) {
+            _warning.textContent = message;
+            _warning.style.display = "block";
+            setTimeout(function(){
+              _warning.textContent = "";
+              _warning.style.display = "none";
+              after();
+            }, 1000);
+          };
+
           function createDiv() {
             var div = document.createElement("div");
             div.style.width = "200px";
             div.style.height = "200px";
+            div.style.display = "inline-block";
             document.body.appendChild(div);
+
+            _warning = document.createElement("div");
+            _warning.style.textAlign = "center";
+            _warning.style.position = "absolute";
+            _warning.style.display = "none";
+            _warning.style.width = "200px";
+            _warning.style.height = "200px";
+            _warning.style.lineHeight = "200px";
+            _warning.style.fontSize = "35px";
+            _warning.style.fontWeight = "bolder";
+            div.appendChild(_warning);
 
             _btns = {
               green: new Button("#050", "green", new Audio("sound/pi.wav"), div),
@@ -224,6 +246,7 @@
                   };
                 });
               } else {
+                disable();
                 _scene.destroy();
                 _scene = new GameOverScene();
               }
@@ -235,9 +258,11 @@
 
             _scene.hud().level(stage.level());
             disable();
-            setTimeout(function(){
-              _scene.highlightNext();
-            }, 500);
+            _scene.board().warn("New Stage", function(){
+              setTimeout(function(){
+                _scene.highlightNext();
+              }, 150);
+            });
 
             return stage;
           }
