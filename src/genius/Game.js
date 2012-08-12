@@ -1,11 +1,13 @@
 (function(Genius) {
+  var Color = Genius.Color;
   var Stage = Genius.Stage;
 
   Genius.Game = function() {
-    var _actualLevel = 0;
+    var _colors = [];
 
     this.nextStage = function() {
-      return new Stage(++_actualLevel);
+      _colors.push(Color.random());
+      return new Stage(_colors);
     }
   }
 }(HugoLnx.Genius));

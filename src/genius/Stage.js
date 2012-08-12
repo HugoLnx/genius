@@ -1,26 +1,20 @@
 (function(Genius) {
-  var Color = Genius.Color;
   var HappyArray = Genius.HappyArray;
 
-  Genius.Stage = function (level) {
-    var _level = level;
+  Genius.Stage = function (colors) {
+    var _level = colors.length;
     var _failed = false;
-    var _colors = new HappyArray();
-    var _allShown = false;
+    var _colorsToShow = new HappyArray(colors);
+    var _colorsToHit = new HappyArray();
 
     this.nextColor = function() {
-      var color = Color.random();
-      _colors.push(color);
-
-      if(_colors.length === _level) {
-        _allShown = true;
-      }
-
+      var color = _colorsToShow.popBack();
+      _colorsToHit.push(color);
       return color;
     };
 
     this.hit = function(color) {
-      var hitted = color === _colors.popBack();
+      var hitted = color === _colorsToHit.popBack();
       if(!hitted) {
         _failed = true;
       }
@@ -29,7 +23,7 @@
     };
 
     this.passed = function() {
-      return _allShown && _colors.length === 0;
+      return this.allShown() && _colorsToHit.length === 0;
     };
 
     this.failed = function() {
@@ -41,7 +35,7 @@
     };
 
     this.allShown = function() {
-      return _allShown;
+      return _colorsToShow.length === 0;
     };
   }
 }(HugoLnx.Genius));
