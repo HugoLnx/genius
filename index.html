@@ -32,7 +32,7 @@
             return _stage;
           }
 
-          function highlightNext() {
+          function highlightSequence(after) {
             var color = _stage.nextColor();
             var btn = _board.btnOfCode(color.code());
             btn.highlight();
@@ -41,15 +41,19 @@
               btn.undoHighlight();
 
               if(_stage.allShown()) {
-                _controls.enable();
+                after();
               } else {
-                setTimeout(highlightNext, 250);
+              setTimeout(function(){
+                highlightSequence(after)
+              }, 250);
               }
             }, 1000);
           };
-          highlightNext();
+          highlightSequence(function(){
+            _controls.enable();
+          });
 
-          this.highlightNext = highlightNext;
+          this.highlightSequence = highlightSequence;
 
           this.game=function(){return _game};
           this.hud=function(){return _hud};
@@ -111,9 +115,7 @@
 
             setTimeout(function() {
               btn.undoHighlight();
-              setTimeout(function() {
-                after();
-              }, 150);
+              after();
             }, 100);
           }
 
@@ -235,43 +237,48 @@
             });
           };
 
+          this.disable = function() {
+            _scene.board().eachButton(function(code, btn){
+              btn.element().onclick = undefined;
+            });
+          };
+
           function setOnClickIn(code, btn) {
-            var stage = _scene.stage();
             btn.element().onclick = function() {
+              var stage = _scene.stage();
               var rightButton = stage.hit(Genius.Color.ofCode(code));
               if (rightButton) {
+                if (stage.passed()) {
+                  _scene.passStage()
+                  _scene.controls().disable();
+                }
                 btn.blink(function() {
                   if (stage.passed()) {
-                    passToNextStage();
+                    changeLevel();
                   };
                 });
               } else {
-                disable();
+                _scene.controls().disable();
                 _scene.destroy();
                 _scene = new GameOverScene();
               }
             }
           }
 
-          function passToNextStage() {
-            var stage = _scene.passStage();
+          function changeLevel() {
+            var stage = _scene.stage();
 
             _scene.hud().level(stage.level());
-            disable();
-            _scene.board().warn("New Stage", function(){
+            _scene.board().warn("New Level", function(){
               setTimeout(function(){
-                _scene.highlightNext();
+                _scene.highlightSequence(function(){
+                  _scene.controls().enable();
+                });
               }, 150);
             });
 
             return stage;
           }
-
-          function disable() {
-            _scene.board().eachButton(function(code, btn){
-              btn.element().onclick = undefined;
-            });
-          };
         }
 
       }(HugoLnx.Genius));
