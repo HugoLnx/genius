@@ -92,6 +92,20 @@
           }
         }
 
+        function HUD() {
+          var _level = newP();
+
+          this.level = function(level) {
+            _level.textContent = "Level: " + level;
+          };
+
+          function newP() {
+            var p = document.createElement("p");
+            document.body.appendChild(p)
+            return p;
+          }
+        }
+
         function Controls(board) {
           var _board = board;
 
@@ -103,7 +117,7 @@
                   highlightButton(btn, function() {
                     if(stage.passed()) {
                       stage = game.nextStage();
-                      levelP.textContent = "Level: " + stage.level();
+                      hud.level(stage.level());
                       disable();
                       setTimeout(function(){
                         highlightNext();
@@ -126,12 +140,11 @@
         }
 
         var game = new Genius.Game();
-        var levelP = document.createElement("p");
-        document.body.appendChild(levelP);
+        var hud = new HUD();
         var board = new Board();
         var stage = game.nextStage();
         var controls = new Controls(board);
-        levelP.textContent = "Level: " + stage.level();
+        hud.level(stage.level());
 
         function highlightNext() {
           var color = stage.nextColor();
