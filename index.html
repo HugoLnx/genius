@@ -12,25 +12,25 @@
 
     <script>
       (function(Genius) {
-        function Button(color, board) {
-          var _color = color;
-          var _element = newDiv(color, board);
+        function Button(normalColor, highlightColor, board) {
+          var _normalColor = normalColor;
+          var _highlightColor = highlightColor;
+          var _element = newDiv(board);
 
           this.highlight = function() {
-            _element.style.opacity = "1";
+            _element.style.backgroundColor = _highlightColor;
           };
 
           this.undoHighlight = function() {
-            _element.style.opacity = "0.5";
+            _element.style.backgroundColor = _normalColor;
           };
 
-          function newDiv(color, board) {
+          function newDiv(board) {
             var div = document.createElement("div")
-            div.style.opacity = "0.5";
             div.style.width = "100px";
             div.style.height = "100px";
             div.style.display = "inline-block";
-            div.style.backgroundColor = color;
+            div.style.backgroundColor = _normalColor;
             board.appendChild(div);
             return div;
           }
@@ -75,16 +75,15 @@
 
           function createDiv() {
             var div = document.createElement("div");
-            div.style.backgroundColor = "white";
             div.style.width = "200px";
             div.style.height = "200px";
             document.body.appendChild(div);
 
             _btns = {
-              green: new Button("green", div),
-              yellow: new Button("yellow", div),
-              blue: new Button("blue", div),
-              red: new Button("red", div)
+              green: new Button("#050", "green", div),
+              yellow: new Button("#550", "yellow", div),
+              blue: new Button("#005", "blue", div),
+              red: new Button("#500", "red", div)
             }
 
             return div;
