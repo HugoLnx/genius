@@ -103,7 +103,9 @@
                       stage = game.nextStage();
                       levelP.textContent = "Level: " + stage.level();
                       disable();
-                      highlightNext();
+                      setTimeout(function(){
+                        highlightNext();
+                      }, 500);
                     }
                   });
                 } else {
@@ -140,7 +142,7 @@
             if(stage.allShown()) {
               controls.enable();
             } else {
-              setTimeout(highlightNext, 500);
+              setTimeout(highlightNext, 250);
             }
           }, 1000);
         };
@@ -152,8 +154,8 @@
             btn.undoHighlight();
             setTimeout(function() {
               after();
-            }, 250);
-          }, 500);
+            }, 150);
+          }, 100);
         }
 
       }(HugoLnx.Genius));
