@@ -12,13 +12,15 @@
 
     <script>
       (function(Genius) {
-        function Button(normalColor, highlightColor, board) {
+        function Button(normalColor, highlightColor, sound, board) {
           var _normalColor = normalColor;
           var _highlightColor = highlightColor;
           var _element = newDiv(board);
+          var _sound = sound;
 
           this.highlight = function() {
             _element.style.backgroundColor = _highlightColor;
+            _sound.play();
           };
 
           this.undoHighlight = function() {
@@ -80,10 +82,10 @@
             document.body.appendChild(div);
 
             _btns = {
-              green: new Button("#050", "green", div),
-              yellow: new Button("#550", "yellow", div),
-              blue: new Button("#005", "blue", div),
-              red: new Button("#500", "red", div)
+              green: new Button("#050", "green", new Audio("sound/pi.wav"), div),
+              yellow: new Button("#550", "yellow", new Audio("sound/pi2.wav"), div),
+              blue: new Button("#005", "blue", new Audio("sound/pi3.wav"), div),
+              red: new Button("#500", "red", new Audio("sound/pi4.wav"), div)
             }
 
             return div;
